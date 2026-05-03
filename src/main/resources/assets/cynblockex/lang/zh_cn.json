@@ -1,0 +1,12 @@
+{
+  "item.cynblockex.glowing_obsidian": "发光黑曜石",
+  "item.cynblockex.old_glowing_obsidian": "旧发光黑曜石",
+  "item.cynblockex.reactor_0": "反应核0",
+  "item.cynblockex.reactor_1": "反应核1",
+  "item.cynblockex.reactor_2": "反应核2",
+  "item.cynblockex.red_obsidian": "红色黑曜石",
+  "item.cynblockex.redux_glowing_obsidian": "Redux发光黑曜石",
+  "itemGroup.cynblockex": "C.Y.N.",
+  "message.cynblockex.update_available": "服务端BlockEX Mod不为最新，请通知服务器管理员及时更新"
+
+}

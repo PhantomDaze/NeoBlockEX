@@ -1,0 +1,20 @@
+package io.github.PhantomDaze.cynblockex;
+
+import net.fabricmc.api.ModInitializer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class BlockEXMod implements ModInitializer {
+	public static final String MOD_ID = "cynblockex";
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	@Override
+	public void onInitialize() {
+		UpdateChecker.initialize();
+		ModBlock.initialize();
+		ModItem.initialize();
+		ModGroup.initialize();
+		LOGGER.info("C.Y.N. BlockEX Mod Loaded");
+	}
+}
