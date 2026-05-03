@@ -1,31 +1,33 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "cynblockex",
 	"version": "${version}",
-	"name": "Example Mod",
+	"name": "C.Y.N. BlockEX",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
-		"Me!"
+		"Antomie-P (code)",
+		"Renbing (textures)",
+		"DeltaForce (a apart of textures)"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
-	"license": "CC0-1.0",
-	"icon": "assets/modid/icon.png",
+	"license": "LGPLv3",
+	"icon": "assets/cynblockex/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.ExampleMod"
+			"io.github.PhantomDaze.cynblockex.BlockEXMod"
 		],
 		"client": [
-			"com.example.client.ExampleModClient"
+			"io.github.PhantomDaze.cynblockex.client.BlockEXModClient"
 		]
 	},
 	"mixins": [
-		"modid.mixins.json",
+		"cynblockex.mixins.json",
 		{
-			"config": "modid.client.mixins.json",
+			"config": "cynblockex.client.mixins.json",
 			"environment": "client"
 		}
 	],
