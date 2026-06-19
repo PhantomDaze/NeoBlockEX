@@ -70,6 +70,42 @@
 
 如果某一个方块需要特殊行为，比如自定义交互、随机刻更新、方块实体、特殊渲染，就需要把该条目扩展成自定义工厂，而不是只用现在这种“名字 + 基础方块”的写法。
 
+#### 普通方块模板
+
+```java
+new BlockDefinition("my_block", Blocks.OBSIDIAN)
+```
+
+对应贴图：
+
+```text
+src/main/resources/assets/cynblockex/textures/block/my_block.png
+```
+
+#### 特殊方块模板
+
+如果某个方块需要专属行为，建议把定义扩展成下面这种结构：
+
+```java
+public record BlockDefinition(
+    String name,
+    Function<BlockBehaviour.Properties, Block> factory,
+    Supplier<BlockBehaviour.Properties> settings
+) {}
+```
+
+然后新增条目时可以写成：
+
+```java
+new BlockDefinition(
+    "my_special_block",
+    MySpecialBlock::new,
+    () -> BlockBehaviour.Properties.ofFullCopy(Blocks.OBSIDIAN)
+        .strength(5.0F, 6.0F)
+        .requiresCorrectToolForDrops()
+)
+```
+
 ### 物品特性
 
 物品的属性通常在 [`ModItem.java`](../src/main/java/io/github/PhantomDaze/cynblockex/ModItem.java) 的 `register(String name)` 里处理。
@@ -86,6 +122,40 @@
 如果所有新物品都要同样特性，直接在这里改 `Item.Properties` 就够了。
 
 如果某一个物品需要特殊行为，比如右键使用、持续使用、攻击效果、附魔行为，就需要把该条目扩展成自定义 `Item` 子类。
+
+#### 普通物品模板
+
+```java
+new ItemDefinition("my_item")
+```
+
+对应贴图：
+
+```text
+src/main/resources/assets/cynblockex/textures/item/my_item.png
+```
+
+#### 特殊物品模板
+
+如果某个物品需要专属行为，建议把定义扩展成下面这种结构：
+
+```java
+public record ItemDefinition(
+    String name,
+    Function<Item.Properties, Item> factory,
+    Supplier<Item.Properties> settings
+) {}
+```
+
+然后新增条目时可以写成：
+
+```java
+new ItemDefinition(
+    "my_special_item",
+    MySpecialItem::new,
+    () -> new Item.Properties().stacksTo(1).durability(250)
+)
+```
 
 ### 什么时候要改注册结构
 
