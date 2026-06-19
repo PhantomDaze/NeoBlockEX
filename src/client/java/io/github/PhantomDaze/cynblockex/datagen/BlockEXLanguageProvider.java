@@ -61,7 +61,7 @@ public class BlockEXLanguageProvider extends FabricLanguageProvider {
     private String translateItem(String name) {
         return chinese ? switch (name) {
             case "cyn" -> "C.Y.N.";
-            case "unknown_item" -> "未知物品";
+            case "unknown_item" -> "不为人知的物品";
             default -> name;
         } : switch (name) {
             case "cyn" -> "C.Y.N.";
