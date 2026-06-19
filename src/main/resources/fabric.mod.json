@@ -3,15 +3,15 @@
 	"id": "cynblockex",
 	"version": "${version}",
 	"name": "C.Y.N. BlockEX",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Adds a small set of custom blocks and items for building.",
 	"authors": [
 		"Antomie-P (code)",
 		"Renbing (textures)",
 		"DeltaForce (a apart of textures)"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/PAntomie/BlockEX",
+		"sources": "https://github.com/PAntomie/BlockEX"
 	},
 	"license": "LGPLv3",
 	"icon": "assets/cynblockex/icon.png",
@@ -20,16 +20,12 @@
 		"main": [
 			"io.github.PhantomDaze.cynblockex.BlockEXMod"
 		],
-		"client": [
-			"io.github.PhantomDaze.cynblockex.client.BlockEXModClient"
+		"fabric-datagen": [
+			"io.github.PhantomDaze.cynblockex.datagen.BlockEXDataGenerator"
 		]
 	},
 	"mixins": [
-		"cynblockex.mixins.json",
-		{
-			"config": "cynblockex.client.mixins.json",
-			"environment": "client"
-		}
+		"cynblockex.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.19.2",

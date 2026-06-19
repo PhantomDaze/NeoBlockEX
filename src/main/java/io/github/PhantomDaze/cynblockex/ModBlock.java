@@ -10,42 +10,63 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Function;
+import java.util.List;
 
 
 public class ModBlock {
-    private static Block register(String name, @NotNull Function<BlockBehaviour.Properties, Block> blockFactory, BlockBehaviour.@NotNull Properties settings) {
+    public record BlockDefinition(String name, Block baseBlock) {}
+
+    private static final List<BlockDefinition> DEFINITIONS = List.of(
+            new BlockDefinition("red_obsidian", Blocks.OBSIDIAN),
+            new BlockDefinition("glowing_obsidian", Blocks.OBSIDIAN),
+            new BlockDefinition("old_glowing_obsidian", Blocks.OBSIDIAN),
+            new BlockDefinition("redux_glowing_obsidian", Blocks.OBSIDIAN),
+            new BlockDefinition("reactor_0", Blocks.NETHERITE_BLOCK),
+            new BlockDefinition("reactor_1", Blocks.NETHERITE_BLOCK),
+            new BlockDefinition("reactor_2", Blocks.NETHERITE_BLOCK)
+    );
+
+    private static final ModRegistry<Block> BLOCKS = new ModRegistry<>();
+
+    static {
+        registerAll();
+    }
+
+    private static void registerAll() {
+        DEFINITIONS.forEach(definition -> BLOCKS.put(definition.name(), register(definition.name(), definition.baseBlock())));
+    }
+
+    private static Block register(String name, Block baseBlock) {
         ResourceKey<Block> blockKey = keyOfBlock(name);
-        Block block = blockFactory.apply(settings.setId(blockKey));
+        BlockBehaviour.Properties settings = BlockBehaviour.Properties.ofFullCopy(baseBlock);
+        Block block = new Block(settings.setId(blockKey));
         ResourceKey<Item> itemKey = keyOfItem(name);
         BlockItem blockItem = new BlockItem(block, new Item.Properties().setId(itemKey));
         Registry.register(BuiltInRegistries.ITEM, itemKey, blockItem);
-
         return Registry.register(BuiltInRegistries.BLOCK, blockKey, block);
     }
-    private static ResourceKey<Block> keyOfBlock(String name) { return ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("cynblockex", name)); }
-    private static ResourceKey<Item> keyOfItem(String name) { return ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("cynblockex", name)); }
-    public static final Block RED_OBSIDIAN = register("red_obsidian", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.OBSIDIAN));
-    public static final Block GLOWING_OBSIDIAN = register("glowing_obsidian", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.OBSIDIAN));
-    public static final Block OLD_GLOWING_OBSIDIAN = register("old_glowing_obsidian", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.OBSIDIAN));
-    public static final Block REDUX_GLOWING_OBSIDIAN = register("redux_glowing_obsidian", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.OBSIDIAN));
-    public static final Block REACTOR_0 = register("reactor_0", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK));
-    public static final Block REACTOR_1 = register("reactor_1", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK));
-    public static final Block REACTOR_2 = register("reactor_2", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.NETHERITE_BLOCK));
-    public static final Block P1 = register("p1", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static final Block P2 = register("p2", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static final Block P3 = register("p3", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static final Block P4 = register("p4", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static final Block P5 = register("p5", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static final Block P6 = register("p6", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static final Block P7 = register("p7", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static final Block P8 = register("p8", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static final Block P9 = register("p9", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static final Block P10 = register("p10", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static final Block P11 = register("p11", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static final Block P12 = register("p12", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static final Block P13 = register("p13", Block::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE));
-    public static void initialize() {}
+
+    private static ResourceKey<Block> keyOfBlock(String name) {
+        return ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath("cynblockex", name));
+    }
+
+    private static ResourceKey<Item> keyOfItem(String name) {
+        return ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("cynblockex", name));
+    }
+
+    public static Block get(String name) {
+        return BLOCKS.get(name);
+    }
+
+    public static List<Block> all() {
+        return BLOCKS.all();
+    }
+
+    public static List<String> names() {
+        return BLOCKS.names();
+    }
+
+    public static void initialize() {
+    }
 }
