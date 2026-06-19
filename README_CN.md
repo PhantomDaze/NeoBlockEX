@@ -1,6 +1,9 @@
 # C.Y.N. BlockEX 模组
 ## 概览
 C.Y.N. BlockEX 是一个使用 Fabric 模组加载器的 Minecraft 26.1.2 的模组。此模组为游戏添加了一些新的方块，以增加建造多样性。
+
+## 文档
+- [如何添加新方块和物品](docs/adding-content.md)
 ## 特性
 - **新方块：**
   - 红色黑曜石

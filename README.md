@@ -3,6 +3,9 @@
 ## Overview
 C.Y.N. BlockEX is a mod for Minecraft 26.1.2 using the Fabric mod loader. This mod adds some new blocks to the game. For build variety building in Minecraft
 
+## Docs
+- [Adding new blocks and items](docs/adding-content.md)
+
 ## Features
 - **New Blocks:**
   - Red Obsidian
