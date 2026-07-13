@@ -1,6 +1,5 @@
 package io.github.PhantomDaze.cynblockex;
 
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -10,20 +9,20 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-
 public class ModGroup {
-    public static final ResourceKey<CreativeModeTab> CUSTOM_ITEM_GROUP_KEY = ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.fromNamespaceAndPath("cynblockex", "item_group"));
-    public static final CreativeModeTab CUSTOM_ITEM_GROUP = FabricCreativeModeTab.builder()
-            .icon(() -> new ItemStack(Objects.requireNonNull(ModItem.get("cyn"), "Missing item: cyn")))
-            .title(Component.translatable("itemGroup.cynblockex"))
-            .build();
+    public static final Map<BlockType, ResourceKey<CreativeModeTab>> BLOCK_TABS = new EnumMap<>(BlockType.class);
+    public static final ResourceKey<CreativeModeTab> ITEMS_TAB_KEY = key("items");
+    public static final ResourceKey<CreativeModeTab> VANILLA_TAB_KEY = key("vanilla");
 
-    private static final List<net.minecraft.world.level.block.Block> VANILLA_BLOCKS = List.of(
+    private static final List<Block> VANILLA_BLOCKS = List.of(
             Blocks.GLASS,
             Blocks.TINTED_GLASS,
             Blocks.RED_STAINED_GLASS,
@@ -44,11 +43,35 @@ public class ModGroup {
     );
 
     public static void initialize() {
-        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, CUSTOM_ITEM_GROUP_KEY, CUSTOM_ITEM_GROUP);
-        CreativeModeTabEvents.modifyOutputEvent(CUSTOM_ITEM_GROUP_KEY).register(output -> {
-            VANILLA_BLOCKS.forEach(block -> output.accept(block));
-            ModBlock.all().forEach(block -> output.accept(block));
-            ModItem.all().forEach(item -> output.accept(item));
-        });
+        for (BlockType type : BlockType.values()) {
+            List<Block> blocks = ModBlock.allOfType(type);
+            if (blocks.isEmpty()) {
+                continue;
+            }
+            ResourceKey<CreativeModeTab> tabKey = key(type.tabId());
+            BLOCK_TABS.put(type, tabKey);
+            Block icon = blocks.getFirst();
+            Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, tabKey, FabricCreativeModeTab.builder()
+                    .title(Component.translatable(type.tabTranslationKey()))
+                    .icon(() -> new ItemStack(icon))
+                    .displayItems((params, output) -> blocks.forEach(output::accept))
+                    .build());
+        }
+
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ITEMS_TAB_KEY, FabricCreativeModeTab.builder()
+                .title(Component.translatable("itemGroup.cynblockex.items"))
+                .icon(() -> new ItemStack(Objects.requireNonNull(ModItem.get("cyn"), "Missing item: cyn")))
+                .displayItems((params, output) -> ModItem.all().forEach(output::accept))
+                .build());
+
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, VANILLA_TAB_KEY, FabricCreativeModeTab.builder()
+                .title(Component.translatable("itemGroup.cynblockex.vanilla"))
+                .icon(() -> new ItemStack(Blocks.GLASS))
+                .displayItems((params, output) -> VANILLA_BLOCKS.forEach(output::accept))
+                .build());
+    }
+
+    private static ResourceKey<CreativeModeTab> key(String path) {
+        return ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.fromNamespaceAndPath(BlockEXMod.MOD_ID, path));
     }
 }

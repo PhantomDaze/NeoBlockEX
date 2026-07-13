@@ -8,6 +8,8 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.data.models.model.TexturedModel;
+import net.minecraft.world.level.block.Block;
 
 public class BlockEXModelProvider extends FabricModelProvider {
     public BlockEXModelProvider(FabricPackOutput output) {
@@ -16,11 +18,46 @@ public class BlockEXModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators blockModelGenerators) {
-        ModBlock.names().forEach(name -> {
-            var block = ModBlock.get(name);
-            blockModelGenerators.createTrivialCube(block);
-            blockModelGenerators.registerSimpleItemModel(block, ModelLocationUtils.getModelLocation(block));
-        });
+        for (String name : ModBlock.names()) {
+            Block block = ModBlock.get(name);
+            switch (ModBlock.getType(name)) {
+                case SIMPLE, TRANSPARENT -> {
+                    blockModelGenerators.createTrivialCube(block);
+                    blockModelGenerators.registerSimpleItemModel(block, ModelLocationUtils.getModelLocation(block));
+                }
+                case PILLAR -> {
+                    blockModelGenerators.createAxisAlignedPillarBlock(block, TexturedModel.COLUMN);
+                    blockModelGenerators.registerSimpleItemModel(block, ModelLocationUtils.getModelLocation(block));
+                }
+                default -> {
+                }
+            }
+        }
+
+        for (String name : ModBlock.names()) {
+            Block block = ModBlock.get(name);
+            Block parent = ModBlock.getParent(name);
+            switch (ModBlock.getType(name)) {
+                case STAIRS -> blockModelGenerators.family(requireParent(name, parent)).stairs(block);
+                case SLAB -> blockModelGenerators.family(requireParent(name, parent)).slab(block);
+                case WALL -> blockModelGenerators.family(requireParent(name, parent)).wall(block);
+                case FENCE -> blockModelGenerators.family(requireParent(name, parent)).fence(block);
+                case FENCE_GATE -> blockModelGenerators.family(requireParent(name, parent)).fenceGate(block);
+                case BUTTON -> blockModelGenerators.family(requireParent(name, parent)).button(block);
+                case PRESSURE_PLATE -> blockModelGenerators.family(requireParent(name, parent)).pressurePlate(block);
+                case DOOR -> blockModelGenerators.createDoor(block);
+                case TRAPDOOR -> blockModelGenerators.createTrapdoor(block);
+                default -> {
+                }
+            }
+        }
+    }
+
+    private static Block requireParent(String name, Block parent) {
+        if (parent == null) {
+            throw new IllegalStateException("Block '" + name + "' requires a parent block for model generation");
+        }
+        return parent;
     }
 
     @Override

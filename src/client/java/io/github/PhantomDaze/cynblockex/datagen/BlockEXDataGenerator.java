@@ -8,6 +8,7 @@ public class BlockEXDataGenerator implements DataGeneratorEntrypoint {
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
         pack.addProvider(BlockEXModelProvider::new);
+        pack.addProvider(BlockEXLootTableProvider::new);
         pack.addProvider((output, registriesFuture) -> new BlockEXLanguageProvider(output, "en_us", registriesFuture, false));
         pack.addProvider((output, registriesFuture) -> new BlockEXLanguageProvider(output, "zh_cn", registriesFuture, true));
     }
